@@ -14,20 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SomeController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SomeController.class);
-
     @Autowired
-    private SomeRepository someRepository;
+    private SomeTransactionalService someTransactionalService;
 
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
 
     @GetMapping("/test")
-    @Transactional
     public void test() {
-        SomeEntity saved = someRepository.save(new SomeEntity());
-        SomeEntitySaved event = new SomeEntitySaved(saved.id);
-        LOG.info("publishing an event {}", event);
-        eventPublisher.publishEvent(event);
+        someTransactionalService.doInTransaction();
     }
 }
